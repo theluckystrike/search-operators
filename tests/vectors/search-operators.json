@@ -1,0 +1,7233 @@
+{
+ "slug": "search-operators",
+ "module": "search-operators/src/query",
+ "function": "search",
+ "note": "args = [query text, notes as [{path, ctime, mtime, tags, links, frontmatter, content}] with times as local YYYY-MM-DDTHH:mm, options {allowPro, createdProperty, modifiedProperty, now}]; expected = {paths in result order, errors, blocked, empty}. Only the fields present are compared. Expected values are written by hand.",
+ "cases": [
+  {
+   "name": "empty query is empty",
+   "args": [
+    "",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [],
+    "empty": true
+   }
+  },
+  {
+   "name": "created on one day",
+   "args": [
+    "created:2026-10-01",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md"
+    ]
+   }
+  },
+  {
+   "name": "created after a day, newest modified first",
+   "args": [
+    "created:>2026-10-01",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md",
+     "Daily/2026-10-09.md"
+    ]
+   }
+  },
+  {
+   "name": "created on or after a day",
+   "args": [
+    "created:>=2026-10-01",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md",
+     "Daily/2026-10-09.md",
+     "Meetings/2026-10-01 Kickoff.md"
+    ]
+   }
+  },
+  {
+   "name": "created before a day",
+   "args": [
+    "created:<2026-03-02",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "created on or before a day",
+   "args": [
+    "created:<=2026-03-02",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "People/Ana.md",
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "created in a month",
+   "args": [
+    "created:2026-09",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  },
+  {
+   "name": "created in a year",
+   "args": [
+    "created:2025",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "created in a range, both ends included",
+   "args": [
+    "created:2026-09-15..2026-10-01",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md",
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  },
+  {
+   "name": "modified in the last 7 days",
+   "args": [
+    "modified:last-7d",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md",
+     "Daily/2026-10-09.md",
+     "Projects/Project plan.md"
+    ]
+   }
+  },
+  {
+   "name": "modified in the last 2 weeks",
+   "args": [
+    "modified:last-2w",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md",
+     "Daily/2026-10-09.md",
+     "Projects/Project plan.md",
+     "Meetings/2026-10-01 Kickoff.md",
+     "People/Ana.md"
+    ]
+   }
+  },
+  {
+   "name": "modified today",
+   "args": [
+    "modified:today",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md"
+    ]
+   }
+  },
+  {
+   "name": "created yesterday",
+   "args": [
+    "created:yesterday",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-09.md"
+    ]
+   }
+  },
+  {
+   "name": "modified in the last month",
+   "args": [
+    "modified:last-1m",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md",
+     "Daily/2026-10-09.md",
+     "Projects/Project plan.md",
+     "Meetings/2026-10-01 Kickoff.md",
+     "People/Ana.md",
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  },
+  {
+   "name": "bad date gives an error and no results",
+   "args": [
+    "created:2026-13-01",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [],
+    "errors": [
+     "created: \"2026-13-01\" is not a date. Use 2026-09-01, 2026-09, 2026, today, yesterday, last-7d or a range like 2026-09-01..2026-09-30."
+    ],
+    "empty": true
+   }
+  },
+  {
+   "name": "links to a note by wiki link",
+   "args": [
+    "linksto:[[Project plan]]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-09.md",
+     "Meetings/2026-10-01 Kickoff.md",
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  },
+  {
+   "name": "links to a note by bare name",
+   "args": [
+    "linksto:Ana",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Projects/Project plan.md",
+     "Meetings/2026-10-01 Kickoff.md",
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "links to a note by path with alias",
+   "args": [
+    "linksto:\"[[People/Ana|our editor]]\"",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Projects/Project plan.md",
+     "Meetings/2026-10-01 Kickoff.md",
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "linked from a note (its outgoing links)",
+   "args": [
+    "linkedfrom:[[Project plan]]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md",
+     "People/Ana.md"
+    ]
+   }
+  },
+  {
+   "name": "linked from a note with heading in link",
+   "args": [
+    "linkedfrom:[[2026-10-01 Kickoff#Notes]]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Projects/Project plan.md",
+     "People/Ana.md"
+    ]
+   }
+  },
+  {
+   "name": "links to a missing note gives an error",
+   "args": [
+    "linksto:[[Nobody]]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [],
+    "errors": [
+     "No note named \"Nobody\"."
+    ]
+   }
+  },
+  {
+   "name": "tag with hash",
+   "args": [
+    "tag:#meeting",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md",
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  },
+  {
+   "name": "tag matches nested tags below it",
+   "args": [
+    "tag:project",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md",
+     "Projects/Project plan.md"
+    ]
+   }
+  },
+  {
+   "name": "tag does not match a tag that only ends with it",
+   "args": [
+    "tag:planning",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": []
+   }
+  },
+  {
+   "name": "path filter is case-insensitive",
+   "args": [
+    "path:people",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "People/Ana.md",
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "file name filter",
+   "args": [
+    "file:kickoff",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md"
+    ]
+   }
+  },
+  {
+   "name": "text term ranks title hits first",
+   "args": [
+    "budget",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-09-15 Budget.md",
+     "Meetings/2026-10-01 Kickoff.md"
+    ]
+   }
+  },
+  {
+   "name": "quoted phrase",
+   "args": [
+    "\"search modal\"",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Projects/Project plan.md"
+    ]
+   }
+  },
+  {
+   "name": "text and date and link together",
+   "args": [
+    "search modified:last-7d linksto:[[Project plan]]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-09.md"
+    ]
+   }
+  },
+  {
+   "name": "operators are case-insensitive",
+   "args": [
+    "TAG:Daily Created:2026-10-10",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md"
+    ]
+   }
+  },
+  {
+   "name": "sort by name",
+   "args": [
+    "path:meetings sort:name",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-09-15 Budget.md",
+     "Meetings/2026-10-01 Kickoff.md"
+    ]
+   }
+  },
+  {
+   "name": "sort by created",
+   "args": [
+    "tag:person sort:created",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "People/Ana.md",
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "unknown sort is an error",
+   "args": [
+    "tag:person sort:size",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "People/Ana.md",
+     "People/Ben.md"
+    ],
+    "errors": [
+     "sort:size is unknown. Use sort:modified, sort:created, sort:name or sort:relevance."
+    ]
+   }
+  },
+  {
+   "name": "operator with no value is an error",
+   "args": [
+    "tag: path:daily",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md",
+     "Daily/2026-10-09.md"
+    ],
+    "errors": [
+     "tag: needs a value."
+    ]
+   }
+  },
+  {
+   "name": "unknown operator is a text term",
+   "args": [
+    "http://example",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": []
+   }
+  },
+  {
+   "name": "created from a property when set",
+   "args": [
+    "created:2026-08",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "createdProperty": "created",
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Projects/Project plan.md"
+    ]
+   }
+  },
+  {
+   "name": "notes without the property use the file time",
+   "args": [
+    "created:2026-10-10",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "createdProperty": "created",
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md"
+    ]
+   }
+  },
+  {
+   "name": "modified from a property",
+   "args": [
+    "modified:>2026-10-09",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "modifiedProperty": "updated",
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-10.md"
+    ]
+   }
+  },
+  {
+   "name": "OR is Pro: blocked when free",
+   "args": [
+    "tag:finance OR tag:person",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [],
+    "blocked": [
+     "OR"
+    ]
+   }
+  },
+  {
+   "name": "OR with Pro",
+   "args": [
+    "tag:finance OR tag:person",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "People/Ana.md",
+     "Meetings/2026-09-15 Budget.md",
+     "People/Ben.md"
+    ]
+   }
+  },
+  {
+   "name": "NOT is Pro: blocked when free",
+   "args": [
+    "path:meetings -tag:finance",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [],
+    "blocked": [
+     "NOT"
+    ]
+   }
+  },
+  {
+   "name": "NOT with Pro",
+   "args": [
+    "path:meetings -tag:finance",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md"
+    ]
+   }
+  },
+  {
+   "name": "NOT on a link with Pro",
+   "args": [
+    "tag:meeting -linksto:Ana",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  },
+  {
+   "name": "property operator is Pro",
+   "args": [
+    "[status:done]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [],
+    "blocked": [
+     "property operators"
+    ]
+   }
+  },
+  {
+   "name": "property equals with Pro",
+   "args": [
+    "[status:done]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md",
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  },
+  {
+   "name": "property exists with Pro",
+   "args": [
+    "[priority]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Projects/Project plan.md",
+     "Inbox/Reading list.md"
+    ]
+   }
+  },
+  {
+   "name": "property number compare is numeric",
+   "args": [
+    "[priority:>5]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Inbox/Reading list.md"
+    ]
+   }
+  },
+  {
+   "name": "property list holds a link",
+   "args": [
+    "[attendees:Ben]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-10-01 Kickoff.md"
+    ]
+   }
+  },
+  {
+   "name": "property date compare",
+   "args": [
+    "[created:<2026-09-01]",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Projects/Project plan.md"
+    ]
+   }
+  },
+  {
+   "name": "OR, NOT and property together",
+   "args": [
+    "[status:active] OR tag:daily -modified:today",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": true,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Daily/2026-10-09.md",
+     "Projects/Project plan.md"
+    ]
+   }
+  },
+  {
+   "name": "a lone dash is a plain text term, not NOT",
+   "args": [
+    "budget -",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-09-15 Budget.md",
+     "Meetings/2026-10-01 Kickoff.md"
+    ],
+    "blocked": []
+   }
+  },
+  {
+   "name": "OR at the edges is ignored",
+   "args": [
+    "OR tag:finance OR",
+    [
+     {
+      "path": "Projects/Project plan.md",
+      "ctime": "2026-08-20T09:00",
+      "mtime": "2026-10-08T17:30",
+      "tags": [
+       "project",
+       "work/planning"
+      ],
+      "links": [
+       "People/Ana.md",
+       "Meetings/2026-10-01 Kickoff.md"
+      ],
+      "frontmatter": {
+       "status": "active",
+       "priority": 2,
+       "created": "2026-08-01"
+      },
+      "content": "---\nstatus: active\n---\n# Project plan\n\nShip the search modal before the October release.\n"
+     },
+     {
+      "path": "Meetings/2026-10-01 Kickoff.md",
+      "ctime": "2026-10-01T10:00",
+      "mtime": "2026-10-01T11:15",
+      "tags": [
+       "meeting"
+      ],
+      "links": [
+       "Projects/Project plan.md",
+       "People/Ana.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "attendees": [
+        "[[Ana]]",
+        "[[Ben]]"
+       ]
+      },
+      "content": "# Kickoff\n\n- Ana owns the release notes.\n- Budget review next week.\n"
+     },
+     {
+      "path": "Meetings/2026-09-15 Budget.md",
+      "ctime": "2026-09-15T14:00",
+      "mtime": "2026-09-16T08:00",
+      "tags": [
+       "meeting",
+       "finance"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "status": "done",
+       "cost": 1200
+      },
+      "content": "Budget meeting. The search budget is 1200 EUR.\n"
+     },
+     {
+      "path": "People/Ana.md",
+      "ctime": "2026-03-02T08:00",
+      "mtime": "2026-09-30T19:00",
+      "tags": [
+       "person"
+      ],
+      "links": [],
+      "frontmatter": {
+       "role": "Editor"
+      },
+      "content": "Ana Lima, editor. Likes long walks and short notes.\n"
+     },
+     {
+      "path": "People/Ben.md",
+      "ctime": "2025-12-24T08:00",
+      "mtime": "2026-01-05T08:00",
+      "tags": [
+       "person"
+      ],
+      "links": [
+       "People/Ana.md"
+      ],
+      "frontmatter": null,
+      "content": ""
+     },
+     {
+      "path": "Daily/2026-10-09.md",
+      "ctime": "2026-10-09T07:00",
+      "mtime": "2026-10-09T22:00",
+      "tags": [
+       "daily"
+      ],
+      "links": [
+       "Projects/Project plan.md"
+      ],
+      "frontmatter": {
+       "updated": "2026-10-09T23:59"
+      },
+      "content": "## Log\n\nWorked on the project plan. Search for dates works.\n"
+     },
+     {
+      "path": "Daily/2026-10-10.md",
+      "ctime": "2026-10-10T06:30",
+      "mtime": "2026-10-10T09:00",
+      "tags": [
+       "daily",
+       "project/search"
+      ],
+      "links": [],
+      "frontmatter": null,
+      "content": "Morning notes.\n"
+     },
+     {
+      "path": "Inbox/Reading list.md",
+      "ctime": "2026-07-01T12:00",
+      "mtime": "2026-07-04T12:00",
+      "tags": [],
+      "links": [],
+      "frontmatter": {
+       "status": "someday",
+       "priority": 10
+      },
+      "content": "- [ ] Read the Obsidian search help\n"
+     }
+    ],
+    {
+     "allowPro": false,
+     "now": "2026-10-10T12:00"
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Meetings/2026-09-15 Budget.md"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,87 @@
+[
+	{
+		"feature": "date-ranges",
+		"caption": "created: with a range: the meetings made in September, from the created property.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"path:meetings created:2026-09-01..2026-09-30\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "recent",
+		"caption": "modified:last-7d lists the notes changed in the last seven days, newest first, with a preview line.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"modified:last-7d\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "links-to",
+		"caption": "linksto:[[Project plan]] lists every note that links to Project plan.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"linksto:[[Project plan]]\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "linked-from",
+		"caption": "linkedfrom:[[Project plan]] lists the notes that Project plan links to.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"linkedfrom:[[Project plan]]\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "text-preview",
+		"caption": "Words and operators together: the word budget in meeting notes, marked in the title and the preview line.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"budget tag:#meeting\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "pro-or-not",
+		"caption": "Pro: OR, NOT and a property operator in one query.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('search-operators-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"tag:#meeting -[status:done] OR [status:active]\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "pro-list",
+		"caption": "Pro: the results of a query written into the weekly review as a list of links.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('search-operators-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); const v = app.workspace.activeLeaf.view; await v.setState({ ...v.getState(), mode: 'source', source: false }, { history: false }); await new Promise((r) => setTimeout(r, 700)); const ed = v.editor; ed.setCursor(ed.lastLine(), 0); await p.insertResults('tag:#meeting created:>=2026-09-01 sort:created'); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the created and modified date properties, the result limit, the saved searches (Pro) and what Pro adds.",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); const p = app.plugins.plugins['search-operators']; p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.settings.savedSearches = 'modified:last-7d tag:#meeting\\nlinksto:[[Project plan]] -tag:#daily'; p.pro.signOut(); app.setting.open(); app.setting.openTabById('search-operators'); await new Promise((r) => setTimeout(r, 500)); document.querySelectorAll('.vertical-tab-content').forEach((el) => { el.scrollTop = el.scrollHeight; }); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"after": "app.setting.close(); 'ok'"
+	},
+	{
+		"feature": "search-operators",
+		"caption": "Type a query: each operator narrows the list.",
+		"frames": [
+			{
+				"note": "Weekly review.md",
+				"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"modified:last-14d\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"wait": 1100,
+				"hold": 2000
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"modified:last-14d tag:#meeting\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"wait": 1100,
+				"hold": 2000
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"modified:last-14d tag:#meeting linksto:[[Search spec]]\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"wait": 1100,
+				"hold": 3000
+			}
+		],
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()"
+	}
+]
