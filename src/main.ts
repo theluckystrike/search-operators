@@ -135,7 +135,14 @@ export default class SearchOperatorsPlugin extends Plugin {
 		for (const file of this.app.vault.getMarkdownFiles()) {
 			const hit = this.texts.get(file.path);
 			if (hit && hit.mtime === file.stat.mtime && hit.size === file.stat.size) continue;
-			this.texts.set(file.path, { mtime: file.stat.mtime, size: file.stat.size, text: await this.app.vault.cachedRead(file) });
+			let text: string;
+			try {
+				text = await this.app.vault.cachedRead(file);
+			} catch {
+				// The note was deleted or moved during the read. Skip it, so the search still opens.
+				continue;
+			}
+			this.texts.set(file.path, { mtime: file.stat.mtime, size: file.stat.size, text });
 			n++;
 		}
 		return n;
@@ -178,11 +185,11 @@ export default class SearchOperatorsPlugin extends Plugin {
 		if (f instanceof TFile) await this.app.workspace.getLeaf(newTab ? 'tab' : false).openFile(f);
 	}
 
-	/** Inserts text at the cursor of the active note, or copies it when no note is in edit mode. */
+	/** Inserts text at the cursor of the active note, or copies it when no note is in edit mode. Selected text stays. */
 	async insertText(text: string): Promise<void> {
 		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (view && view.getMode() === 'source') {
-			view.editor.replaceSelection(text);
+			view.editor.replaceRange(text, view.editor.getCursor('to'));
 			new Notice('Inserted the results as a list.');
 			return;
 		}

@@ -1,5 +1,11 @@
 # search-operators
 
+## 1.1.1
+
+### Patch Changes
+
+- 1ef9cd9: Keep selected text when the results list goes into a note, rank a title match above text matches, reject days that are not in the month, ignore an empty phrase, skip a note that cannot be read, and correct README claims.
+
 ## 1.1.0
 
 ### Minor Changes

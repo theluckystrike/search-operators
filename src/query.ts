@@ -112,6 +112,9 @@ export function linkTarget(raw: string): string {
 /** Local midnight of a date. */
 const day = (y: number, m: number, d: number): number => new Date(y, m - 1, d).getTime();
 
+/** True when day d is in that month, so 2026-02-31 is not a date. */
+const realDay = (y: number, m: number, d: number): boolean => new Date(y, m - 1, d).getDate() === d;
+
 /** A date token as a span: YYYY-MM-DD (one day), YYYY-MM (month), YYYY (year), today, yesterday. */
 function tokenSpan(tok: string, now: number): DateRange | null {
 	const t = tok.toLowerCase();
@@ -122,7 +125,7 @@ function tokenSpan(tok: string, now: number): DateRange | null {
 	let m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(t);
 	if (m) {
 		const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
-		if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+		if (mo < 1 || mo > 12 || d < 1 || !realDay(y, mo, d)) return null;
 		return { from: day(y, mo, d), to: day(y, mo, d + 1) };
 	}
 	m = /^(\d{4})-(\d{1,2})$/.exec(t);
@@ -235,6 +238,8 @@ export function parseQuery(text: string, now: number): Query {
 			continue;
 		}
 		const r = parseToken(token, now);
+		// An empty phrase ("" or a lone quote while you type) is in each note, so it is not a term.
+		if ('kind' in r && r.kind === 'text' && r.value === '') continue;
 		if ('error' in r) q.errors.push(r.error);
 		else if ('sort' in r) q.sort = r.sort;
 		else q.groups[q.groups.length - 1]?.push(r);
@@ -358,7 +363,8 @@ function clauseScore(c: Clause, note: NoteData, times: { created: number; modifi
 			const title = basename(note.path).toLowerCase();
 			let s = title.includes(c.value) ? 10 : note.path.toLowerCase().includes(c.value) ? 3 : 0;
 			const body = (note.content ?? '').toLowerCase();
-			if (body.includes(c.value)) s += 1 + Math.min(9, body.split(c.value).length - 2);
+			// Text hits add 1 to 9, less than the 10 of a title hit, so a title hit ranks first.
+			if (body.includes(c.value)) s += 1 + Math.min(8, body.split(c.value).length - 2);
 			return s;
 		}
 		case 'date':

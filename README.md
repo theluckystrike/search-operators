@@ -24,7 +24,7 @@ The dates are local time. By default they come from the file. If your notes keep
 
 ### Links to a note
 
-`linksto:[[Project plan]]` lists every note that links to Project plan, which is the same list as its backlinks. You can type the name with or without brackets, with a folder, with an alias or with a heading: `linksto:Ana`, `linksto:[[People/Ana|our editor]]`. The plugin finds the note the same way Obsidian resolves a link. If no note has that name, the status line says so.
+`linksto:[[Project plan]]` lists the notes that link to Project plan, which is the same list as its backlinks. You can type the name with or without brackets, with a folder, with an alias or with a heading: `linksto:Ana`, `linksto:[[People/Ana|our editor]]`. The plugin finds the note the same way Obsidian resolves a link. If no note has that name, the status line says so.
 
 The command "Find notes that link to the current note" opens the modal with this operator filled in.
 
@@ -44,7 +44,7 @@ Put `*` or `?` in a link target to match a group of notes at once. `linksto:[[Pr
 
 ### Words, tags and paths with a preview line
 
-Plain words must all appear in the title, the path or the text of the note. Put a phrase in quotes: `"search modal"`. A title match ranks first. Each result shows the path, the created and modified dates, and one line of the note. When you search for words, the line is the first one with a match, and the words are marked.
+Each plain word must appear in the title, the path or the text of the note. Put a phrase in quotes: `"search modal"`. For one word, a note with the word in its title ranks above a note with the word only in its text. Each result shows the path, the created and modified dates, and one line of the note. When you search for words, the line is the first one with a match, and the words are marked.
 
 `tag:project` also finds nested tags such as `#project/search`. `path:meetings` matches any part of the path, and `file:kickoff` matches the file name. `sort:modified`, `sort:created`, `sort:name` and `sort:relevance` change the order.
 
@@ -54,13 +54,13 @@ Plain words must all appear in the title, the path or the text of the note. Put 
 
 Put `OR` between two groups to get notes that match either group. Put `-` in front of any operator or word to exclude it: `path:meetings -tag:finance`. Property operators test frontmatter: `[status]` means the property has a value, `[status:done]` means it holds done, and `[priority:>5]` or `[due:<2026-11-01]` compare numbers or dates. Lists work: `[attendees:Ben]` finds a link to Ben in the attendees list.
 
-Without Pro, a query with these parts lists nothing and the status line names the Pro part. You never get results that silently ignore part of your query.
+Without Pro, a query with these parts lists nothing and the status line names the Pro part. So the list does not ignore the Pro part of your query.
 
 <img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/pro-or-not.png" alt="OR, NOT and a property operator in one query" width="720">
 
 ### Results as a Markdown list (Pro)
 
-Press Ctrl or Cmd + Shift + Enter in the modal. The plugin writes the results into the active note at the cursor, as a list of wiki links with the query above it. If no note is in edit mode, the list goes to the clipboard.
+Press Ctrl or Cmd + Shift + Enter in the modal. The plugin writes the results into the active note at the cursor, after the selected text if there is a selection, as a list of wiki links with the query above it. If no note is in edit mode, the list goes to the clipboard.
 
 <img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/pro-list.png" alt="Results written into the weekly review" width="720">
 
@@ -79,7 +79,7 @@ To install by hand, download `main.js`, `manifest.json` and `styles.css` from th
 ## Usage
 
 1. Open the command palette and run "Search notes with operators", or select the search icon in the ribbon.
-2. Type words and operators. Spaces separate them, and every part must match.
+2. Type words and operators. Spaces separate them, and each part must match. With Pro, `OR` between two groups matches either group.
 3. Use the arrow keys to pick a note. Enter opens it. Ctrl or Cmd + Enter opens it in a new tab.
 
 The line above the results shows the count, or a message when an operator has a problem. A bad date shows the date forms that work. An empty query shows a short list of examples.
@@ -91,7 +91,7 @@ Some queries to start with:
 - `linksto:[[Ana]] created:>2026-09-01`: notes made after 1 September that link to Ana.
 - `linkedfrom:[[Reading list]] sort:name`: the notes your reading list links to, by name.
 
-The plugin reads each note once and keeps the text in memory until the note changes, so the second search is faster. Links come from the link index of Obsidian. It writes nothing to your notes, except when you use the Pro list command.
+When you open the modal, the plugin reads the notes that changed since the last search and keeps their text in memory. It does not read an unchanged note again. Links come from the link index of Obsidian. It writes nothing to your notes, except when you use the Pro list command.
 
 ## Settings
 
@@ -99,7 +99,7 @@ The plugin reads each note once and keeps the text in memory until the note chan
 | --- | --- |
 | Created date property | The frontmatter property with the date a note was made, for example `created`. Empty means the file creation time. A note without the property uses the file time. File creation times change when you copy or sync a vault, so a property is more reliable. |
 | Modified date property | The same for the last change, for example `updated`. |
-| Most results | The modal lists at most this many notes, from 20 to 500. The count is always the full count. |
+| Most results | The modal lists at most this many notes, from 20 to 500. The count above the list is the full count. |
 | Saved searches (Pro) | One query per line. |
 
 ## FAQ
@@ -122,7 +122,7 @@ No. It matches `#work` and tags below it, such as `#work/admin`.
 
 ### Is there a limit in the free version?
 
-No. The date, link, tag, path, file and sort operators have no limit on notes or results.
+No. Words and the date, link, tag, path, file and sort operators search the full vault. The modal lists up to the number in the "Most results" setting (20 to 500), and the count above the list is the full count.
 
 ### How is this different from Omnisearch?
 
@@ -134,7 +134,7 @@ Dataview can list notes by date and by link, but you write each query in a code 
 
 ### Does it work on a phone?
 
-It should. The plugin is not marked desktop only, and the modal uses the same suggestion list as the quick switcher. The tests run on the desktop app only, so please report a problem on a phone in the issue tracker.
+The plugin is not marked desktop only, and the modal uses the same suggestion list as the quick switcher. We test it on the desktop app only, not on a phone. Please report a problem on a phone in the issue tracker.
 
 ### How are the date ranges counted?
 

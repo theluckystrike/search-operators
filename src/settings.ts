@@ -66,7 +66,7 @@ export class SearchOperatorsSettingTab extends PluginSettingTab {
 			},
 			{
 				name: 'Most results',
-				desc: `The modal lists at most this many notes, from ${MAX_RESULTS_MIN} to ${MAX_RESULTS_MAX}. The count above the list is always the full count.`,
+				desc: `The modal lists at most this many notes, from ${MAX_RESULTS_MIN} to ${MAX_RESULTS_MAX}. The count above the list is the full count.`,
 				control: { type: 'slider', key: 'maxResults', defaultValue: DEFAULT_SETTINGS.maxResults, min: MAX_RESULTS_MIN, max: MAX_RESULTS_MAX, step: 10 },
 			},
 			{
