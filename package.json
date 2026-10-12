@@ -1,6 +1,6 @@
 {
 	"name": "search-operators",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"private": true,
 	"description": "Search notes by created and modified date, links to and from a note, tag and path, in a search modal with a preview line for each result.",
 	"main": "main.js",

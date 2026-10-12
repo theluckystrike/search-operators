@@ -32,6 +32,14 @@
 		"wait": 1200
 	},
 	{
+		"feature": "link-patterns",
+		"caption": "linksto:[[Projects/*]] lists every note that links to any note in the Projects folder.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['search-operators']; document.querySelectorAll('.modal-container').forEach((el) => el.remove()); p.settings.createdProperty = 'created'; p.settings.modifiedProperty = 'updated'; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); p.openSearch(\"linksto:[[Projects/*]]\"); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
 		"feature": "text-preview",
 		"caption": "Words and operators together: the word budget in meeting notes, marked in the title and the preview line.",
 		"note": "Weekly review.md",

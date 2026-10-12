@@ -36,6 +36,12 @@ The command "Find notes that link to the current note" opens the modal with this
 
 <img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/linked-from.png" alt="Notes that Project plan links to" width="720">
 
+### Link patterns
+
+<img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/link-patterns.png" alt="Notes that link to any note in the Projects folder" width="720">
+
+Put `*` or `?` in a link target to match a group of notes at once. `linksto:[[Projects/*]]` lists the notes that link to any note in a Projects folder, and `linkedfrom:[[Projects/*]]` lists the notes that the notes in a Projects folder link to. The `*` takes the place of any text and the `?` takes the place of one character. Case does not matter. A pattern matches the path of a note, the end of that path, or the file name, as a link does, so `Projects/*` also finds `Work/Projects/`. For `linksto`, a pattern also matches the link text as written, so a link to a note that does not exist yet still counts, and the search shows no error when no note has the name. This answers forum requests to see what links to a whole folder of notes, not one note at a time.
+
 ### Words, tags and paths with a preview line
 
 Plain words must all appear in the title, the path or the text of the note. Put a phrase in quotes: `"search modal"`. A title match ranks first. Each result shows the path, the created and modified dates, and one line of the note. When you search for words, the line is the first one with a match, and the words are marked.

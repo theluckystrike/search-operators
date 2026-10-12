@@ -146,12 +146,15 @@ export default class SearchOperatorsPlugin extends Plugin {
 		const resolved = this.app.metadataCache.resolvedLinks;
 		return this.app.vault.getMarkdownFiles().map((file) => {
 			const cache = this.app.metadataCache.getFileCache(file);
+			// Body links, embeds and frontmatter links as written, as resolvedLinks has all three.
+			const rawLinks = [...(cache?.links ?? []), ...(cache?.embeds ?? []), ...(cache?.frontmatterLinks ?? [])].map((l) => l.link);
 			return {
 				path: file.path,
 				ctime: file.stat.ctime,
 				mtime: file.stat.mtime,
 				tags: (cache ? (getAllTags(cache) ?? []) : []).map((t) => t.replace(/^#/, '')),
 				links: Object.keys(resolved[file.path] ?? {}),
+				rawLinks,
 				frontmatter: cache?.frontmatter ?? null,
 				content: withText ? (this.texts.get(file.path)?.text ?? '') : this.texts.get(file.path)?.text,
 			};

@@ -49,6 +49,55 @@ describe('parseQuery', () => {
 	});
 });
 
+describe('wildcard link targets', () => {
+	it('parses * and ? in link targets as a wildcard', () => {
+		expect(parseQuery('linksto:[[Project*]]', now).groups[0]).toEqual([
+			{ kind: 'linksto', target: 'Project*', wildcard: true, negate: false },
+		]);
+		expect(parseQuery('linkedfrom:[[x?y]]', now).groups[0]).toEqual([
+			{ kind: 'linkedfrom', target: 'x?y', wildcard: true, negate: false },
+		]);
+		expect(parseQuery('linksto:[[My note]]', now).groups[0]).toEqual([
+			{ kind: 'linksto', target: 'My note', wildcard: false, negate: false },
+		]);
+	});
+	it('linksto with a pattern matches raw link texts, including links that do not resolve', () => {
+		const n: NoteData = {
+			path: 'a.md',
+			ctime: 0,
+			mtime: 0,
+			tags: [],
+			links: [],
+			rawLinks: ['[[Project plan]]', '[[Inbox/2026-10|today]]', '[[Moscow guide]]'],
+			frontmatter: null,
+		};
+		const run = (q: string): string[] => search(parseQuery(q, now), [n], { allowPro: false }).hits.map((h) => h.path);
+		expect(run('linksto:[[Project*]]')).toEqual(['a.md']);
+		expect(run('linksto:[[Inbox/*]]')).toEqual(['a.md']);
+		expect(run('linksto:[[moscow*]]')).toEqual(['a.md']);
+		expect(run('linksto:[[Project?plan]]')).toEqual(['a.md']);
+		expect(run('linksto:[[Nothing*]]')).toEqual([]);
+	});
+	it('linksto with a pattern makes no error when no note has the name', () => {
+		const n: NoteData = { path: 'a.md', ctime: 0, mtime: 0, tags: [], links: [], rawLinks: [], frontmatter: null };
+		const r = search(parseQuery('linksto:[[Nobody*]]', now), [n], { allowPro: false });
+		expect(r.errors).toEqual([]);
+	});
+	it('linkedfrom with a pattern matches source note paths', () => {
+		const sources: NoteData[] = [
+			{ path: 'Projects/Plan A.md', ctime: 0, mtime: 0, tags: [], links: ['People/Ana.md'], frontmatter: null },
+			{ path: 'Projects/Plan B.md', ctime: 0, mtime: 0, tags: [], links: [], frontmatter: null },
+		];
+		const target: NoteData = { path: 'People/Ana.md', ctime: 0, mtime: 0, tags: [], links: [], frontmatter: null };
+		const r = search(parseQuery('linkedfrom:[[Projects/*]]', now), [...sources, target], { allowPro: false });
+		expect(r.hits.map((h) => h.path)).toEqual(['People/Ana.md']);
+	});
+	it('a dot in a pattern matches only a literal dot', () => {
+		const n: NoteData = { path: 'a.md', ctime: 0, mtime: 0, tags: [], links: [], rawLinks: ['[[a.b]]', '[[axb]]'], frontmatter: null };
+		expect(search(parseQuery('linksto:[[a*.b]]', now), [n], { allowPro: false }).hits.map((h) => h.path)).toEqual(['a.md']);
+	});
+});
+
 describe('helpers', () => {
 	it('linkTarget strips brackets, alias and heading', () => {
 		expect(linkTarget('[[A/B|c]]')).toBe('A/B');

@@ -14,7 +14,7 @@ export interface DateRange {
 export type Clause =
 	| { kind: 'text'; value: string; negate: boolean }
 	| { kind: 'date'; field: DateField; range: DateRange; negate: boolean }
-	| { kind: 'linksto' | 'linkedfrom'; target: string; negate: boolean }
+	| { kind: 'linksto' | 'linkedfrom'; target: string; wildcard: boolean; negate: boolean }
 	| { kind: 'tag' | 'path' | 'file'; value: string; negate: boolean }
 	| { kind: 'prop'; key: string; op: PropOp; value: string; negate: boolean };
 
@@ -35,6 +35,8 @@ export interface NoteData {
 	tags: string[];
 	/** Paths of the notes this note links to (resolved links only). */
 	links: string[];
+	/** Link texts of this note as written, with alias and heading kept (unresolved links included). */
+	rawLinks?: string[];
 	frontmatter: Record<string, unknown> | null;
 	/** Note text. Leave undefined when the query has no text term; then no preview is made. */
 	content?: string;
@@ -217,7 +219,7 @@ function parseToken(token: string, now: number): Clause | { sort: SortKey } | { 
 	}
 	if (op === 'linksto' || op === 'linkedfrom') {
 		const target = linkTarget(value);
-		return target ? { kind: op, target, negate } : { error: `${op}: needs a note name, like ${op}:[[Project plan]].` };
+		return target ? { kind: op, target, wildcard: /[*?]/.test(target), negate } : { error: `${op}: needs a note name, like ${op}:[[Project plan]].` };
 	}
 	const v = unquote(value).toLowerCase();
 	if (op === 'tag') return { kind: 'tag', value: v.replace(/^#/, ''), negate };
@@ -288,6 +290,28 @@ export function makeResolver(paths: string[]): (linktext: string) => string | nu
 	};
 }
 
+/** Turn a pattern with '*' and '?' into a case-insensitive RegExp. Other characters are plain. */
+const wildcardRegExp = (pattern: string): RegExp => {
+	let out = '';
+	for (const ch of pattern) {
+		if (ch === '*') out += '.*';
+		else if (ch === '?') out += '.';
+		else out += ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
+	return new RegExp(`^${out}$`, 'i');
+};
+
+/**
+ * True when a pattern matches a note path the way Obsidian resolves a link: the full path or any end part
+ * of it that starts after a '/', with or without .md. So `Projects/*` finds a Projects folder at any depth.
+ */
+const patternHitsPath = (rx: RegExp, path: string): boolean => {
+	for (const p of [path, path.replace(/\.md$/i, '')]) {
+		for (let i = 0; i >= 0; i = p.indexOf('/', i) + 1 || -1) if (rx.test(p.slice(i))) return true;
+	}
+	return false;
+};
+
 const asTexts = (v: unknown): string[] => {
 	if (v === null || v === undefined) return [];
 	if (Array.isArray(v)) return v.flatMap(asTexts);
@@ -322,6 +346,9 @@ interface Ctx {
 	resolve: (linktext: string) => string | null;
 	byPath: Map<string, NoteData>;
 	errors: Set<string>;
+	/** Wildcard RegExps and linkedfrom target sets, made once for each query, not once for each note. */
+	patterns: Map<string, RegExp>;
+	linkedFrom: Map<string, Set<string>>;
 }
 
 /** Score of one clause on a note: 0 = no match. Text terms score by where they hit. */
@@ -338,6 +365,30 @@ function clauseScore(c: Clause, note: NoteData, times: { created: number; modifi
 			return inRange(c.field === 'created' ? times.created : times.modified, c.range) ? 1 : 0;
 		case 'linksto':
 		case 'linkedfrom': {
+			if (c.wildcard) {
+				// A pattern target matches the link text as written, so links to notes that do not
+				// exist also count (forum topic 11567). No resolve, no error.
+				let rx = ctx.patterns.get(c.target);
+				if (!rx) ctx.patterns.set(c.target, (rx = wildcardRegExp(c.target)));
+				if (c.kind === 'linksto') {
+					// Strip [[ ]], then the alias and heading parts, as linkTarget does.
+					const head = (l: string): string => {
+						const bare = l.replace(/^\[\[/, '').replace(/\]\]$/, '');
+						return (bare.split('|')[0] ?? '').split('#')[0] ?? '';
+					};
+					// Most wiki links name the note without its folder, so the pattern matches the
+					// resolved link path too.
+					return (note.rawLinks ?? []).some((l) => rx.test(head(l))) || note.links.some((l) => patternHitsPath(rx, l)) ? 1 : 0;
+				}
+				// linkedfrom with a pattern: the pattern matches source notes by path or file name.
+				let targets = ctx.linkedFrom.get(c.target);
+				if (!targets) {
+					targets = new Set();
+					for (const src of ctx.byPath.values()) if (patternHitsPath(rx, src.path)) for (const l of src.links) targets.add(l);
+					ctx.linkedFrom.set(c.target, targets);
+				}
+				return targets.has(note.path) ? 1 : 0;
+			}
 			const target = ctx.resolve(c.target);
 			if (!target) {
 				ctx.errors.add(`No note named "${c.target}".`);
@@ -412,7 +463,7 @@ function sortHits(hits: Hit[], key: SortKey): Hit[] {
 
 /** Runs a query over notes. Sort: sort: operator, else relevance with text terms, else newest modified first. */
 export function search(query: Query, notes: NoteData[], opts: SearchOptions): SearchResult {
-	const ctx: Ctx = { opts, resolve: opts.resolve ?? makeResolver(notes.map((n) => n.path)), byPath: new Map(notes.map((n) => [n.path, n])), errors: new Set(query.errors) };
+	const ctx: Ctx = { opts, resolve: opts.resolve ?? makeResolver(notes.map((n) => n.path)), byPath: new Map(notes.map((n) => [n.path, n])), errors: new Set(query.errors), patterns: new Map(), linkedFrom: new Map() };
 	if (!query.groups.length) return { hits: [], errors: [...ctx.errors], blocked: [], empty: true };
 	if (query.pro.length && !opts.allowPro) return { hits: [], errors: [...ctx.errors], blocked: [...query.pro], empty: false };
 	const terms = textTerms(query);
