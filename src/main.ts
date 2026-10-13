@@ -33,7 +33,7 @@ export default class SearchOperatorsPlugin extends Plugin {
 	async onload(): Promise<void> {
 		await this.loadSettings();
 		// No request here: a request needs a GitHub sign in first (Settings, Pro, Sign in with GitHub).
-		const pro = createGitHubSponsors(this.app, this.manifest.id, SPONSORS);
+		const pro = createGitHubSponsors(this.app, this.manifest.id, SPONSORS, this);
 		pro.init();
 		this.pro = pro;
 		bindPro(pro);
