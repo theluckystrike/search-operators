@@ -84,6 +84,10 @@ export function tokenize(text: string): string[] {
 	let depth = 0;
 	for (let i = 0; i < text.length; i++) {
 		const ch = text[i] ?? '';
+		if (quote && ch === '\\' && (text[i + 1] === '"' || text[i + 1] === '\\')) {
+			cur += ch + text[++i];
+			continue;
+		}
 		if (ch === '"' && depth === 0) quote = !quote;
 		else if (!quote && ch === '[') depth++;
 		else if (!quote && ch === ']' && depth > 0) depth--;
@@ -98,7 +102,11 @@ export function tokenize(text: string): string[] {
 	return out;
 }
 
-const unquote = (s: string): string => (s.length >= 2 && s.startsWith('"') && s.endsWith('"') ? s.slice(1, -1) : s.replace(/^"/, ''));
+const unquote = (s: string): string => {
+	if (!s.startsWith('"')) return s;
+	const body = s.length >= 2 && s.endsWith('"') ? s.slice(1, -1) : s.slice(1);
+	return body.replace(/\\(["\\])/g, '$1');
+};
 
 /** [[Note|alias]] or [[Note#Heading]] or Note to "Note". */
 export function linkTarget(raw: string): string {
@@ -470,6 +478,7 @@ function sortHits(hits: Hit[], key: SortKey): Hit[] {
 /** Runs a query over notes. Sort: sort: operator, else relevance with text terms, else newest modified first. */
 export function search(query: Query, notes: NoteData[], opts: SearchOptions): SearchResult {
 	const ctx: Ctx = { opts, resolve: opts.resolve ?? makeResolver(notes.map((n) => n.path)), byPath: new Map(notes.map((n) => [n.path, n])), errors: new Set(query.errors), patterns: new Map(), linkedFrom: new Map() };
+	if (query.errors.length) return { hits: [], errors: [...ctx.errors], blocked: [], empty: !query.groups.length };
 	if (!query.groups.length) return { hits: [], errors: [...ctx.errors], blocked: [], empty: true };
 	if (query.pro.length && !opts.allowPro) return { hits: [], errors: [...ctx.errors], blocked: [...query.pro], empty: false };
 	const terms = textTerms(query);

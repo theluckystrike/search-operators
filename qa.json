@@ -91,5 +91,13 @@
 			}
 		],
 		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((el) => el.remove()); app.plugins.plugins['search-operators'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "hard-inputs",
+		"caption": "Regression checks for hard inputs.",
+		"note": "Hard inputs.md",
+		"eval": "(async () => { const p=app.plugins.plugins['search-operators']; p.pro.signOut(); const m=p.openSearch(); await new Promise(r=>setTimeout(r,700)); const q='\"He said \\\\\"hello world\\\\\"\"'; const hits=m.getSuggestions(q); if(!hits.some(x=>x.path.endsWith('/Hard inputs.md'))) throw new Error('Escaped quote did not match'); if(m.getSuggestions('padding created:invalid').length) throw new Error('Invalid date returned results'); if(!m.getSuggestions('/a+b/').some(x=>x.path.endsWith('/Hard inputs.md'))) throw new Error('Literal regex text did not match'); m.inputEl.value=q; m.inputEl.dispatchEvent(new Event('input')); return 'hard inputs passed'; })()",
+		"wait": 700,
+		"after": "document.querySelectorAll('.modal-container').forEach(el => el.remove()); 'ok'"
 	}
 ]

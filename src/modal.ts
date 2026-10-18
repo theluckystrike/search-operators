@@ -1,4 +1,4 @@
-import { SuggestModal, type App } from 'obsidian';
+import { Keymap, SuggestModal, type App } from 'obsidian';
 import { isPro } from './pro';
 import { parseQuery, textTerms, type Hit } from './query';
 import { needsPro } from './main';
@@ -130,7 +130,7 @@ export class OperatorSearchModal extends SuggestModal<Hit> {
 		}
 	}
 
-	onChooseSuggestion(hit: Hit): void {
-		void this.plugin.openPath(hit.path, false);
+	onChooseSuggestion(hit: Hit, evt: MouseEvent | KeyboardEvent): void {
+		void this.plugin.openPath(hit.path, Boolean(Keymap.isModEvent(evt)));
 	}
 }

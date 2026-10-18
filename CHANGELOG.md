@@ -1,5 +1,11 @@
 # search-operators
 
+## 1.1.3
+
+### Patch Changes
+
+- f348b90: Handle escaped quotes and stop queries with invalid clauses. Open modified result clicks in a new tab.
+
 ## 1.1.2
 
 ### Patch Changes

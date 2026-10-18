@@ -44,7 +44,7 @@ Put `*` or `?` in a link target to match a group of notes at once. `linksto:[[Pr
 
 ### Words, tags and paths with a preview line
 
-Each plain word must appear in the title, the path or the text of the note. Put a phrase in quotes: `"search modal"`. For one word, a note with the word in its title ranks above a note with the word only in its text. Each result shows the path, the created and modified dates, and one line of the note. When you search for words, the line is the first one with a match, and the words are marked.
+Each plain word must appear in the title, the path or the text of the note. Put a phrase in quotes: `"search modal"`. Use `\"` for a quote inside the phrase. Regular expression characters are literal text. For one word, a note with the word in its title ranks above a note with the word only in its text. Each result shows the path, the created and modified dates, and one line of the note. When you search for words, the line is the first one with a match, and the words are marked.
 
 `tag:project` also finds nested tags such as `#project/search`. `path:meetings` matches any part of the path, and `file:kickoff` matches the file name. `sort:modified`, `sort:created`, `sort:name` and `sort:relevance` change the order.
 
@@ -80,9 +80,9 @@ To install by hand, download `main.js`, `manifest.json` and `styles.css` from th
 
 1. Open the command palette and run "Search notes with operators", or select the search icon in the ribbon.
 2. Type words and operators. Spaces separate them, and each part must match. With Pro, `OR` between two groups matches either group.
-3. Use the arrow keys to pick a note. Enter opens it. Ctrl or Cmd + Enter opens it in a new tab.
+3. Use the arrow keys to pick a note. Enter opens it. Ctrl or Cmd + Enter opens it in a new tab. Ctrl or Cmd + click also opens a result in a new tab.
 
-The line above the results shows the count, or a message when an operator has a problem. A bad date shows the date forms that work. An empty query shows a short list of examples.
+The line above the results shows the count, or a message when an operator has a problem. A bad date shows the date forms that work. A query with an invalid operator value returns no results. An empty query shows a short list of examples.
 
 Some queries to start with:
 

@@ -5044,10 +5044,7 @@
     }
    ],
    "expected": {
-    "paths": [
-     "People/Ana.md",
-     "People/Ben.md"
-    ],
+    "paths": [],
     "errors": [
      "sort:size is unknown. Use sort:modified, sort:created, sort:name or sort:relevance."
     ]
@@ -5186,10 +5183,7 @@
     }
    ],
    "expected": {
-    "paths": [
-     "Daily/2026-10-10.md",
-     "Daily/2026-10-09.md"
-    ],
+    "paths": [],
     "errors": [
      "tag: needs a value."
     ]
