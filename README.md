@@ -6,6 +6,8 @@ The core search of Obsidian 1.14 has `file:`, `path:`, `content:`, `tag:`, `line
 
 <img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/search-operators.gif" alt="Type a query and each operator narrows the list" width="720">
 
+Free searches by dates, links, tags, and paths, with result previews. Pro adds OR, NOT and property operators, Markdown result lists, and saved searches. Pro costs $15 one time or $5 a month. Choose [GitHub Sponsors](https://github.com/sponsors/theluckystrike?metadata_source=search-operators) or the [$15 one-time offer](https://github.com/sponsors/theluckystrike/sponsorships?tier_id=666162&metadata_source=search-operators).
+
 ## Features
 
 ### Date ranges
@@ -154,7 +156,9 @@ After a successful check, Pro can work offline for up to 14 days. Sign out or a 
 
 ## Support
 
-Report a bug or ask for a feature in the issue tracker of this repository. To support the work, use [GitHub Sponsors](https://github.com/sponsors/theluckystrike).
+Plugin page: [search-operators](https://notemods.com/plugins/search-operators/).
+
+Report bugs and ask for features in the issue tracker of this repository.
 
 ```
 npm ci
