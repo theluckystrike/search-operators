@@ -84,7 +84,7 @@ describe(`${pluginId} smoke test`, function () {
 
 	it('the commands are registered', async function () {
 		const ids = await browser.executeObsidian(({ app }, id) => Object.keys((app as unknown as { commands: { commands: Record<string, unknown> } }).commands.commands).filter((c) => c.startsWith(id + ':')).sort(), pluginId);
-		expect(ids).toEqual([`${pluginId}:linked-from-current`, `${pluginId}:links-to-current`, `${pluginId}:open-search`, `${pluginId}:run-saved`]);
+		expect(ids).toEqual([`${pluginId}:linked-from-current`, `${pluginId}:links-to-current`, `${pluginId}:open-search`, `${pluginId}:run-saved`, `${pluginId}:send-feedback`, `${pluginId}:show-whats-new`]);
 		await browser.execute(() => document.querySelectorAll('.search-operators-modal').forEach((el) => el.closest('.modal-container')?.remove()));
 	});
 });

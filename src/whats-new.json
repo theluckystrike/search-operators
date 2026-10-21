@@ -1,0 +1,34 @@
+{
+	"id": "search-operators",
+	"name": "Search Operators",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Handles escaped quotes and stops queries with invalid clauses.",
+		"Opens modified result clicks in a new tab."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"A query with a mistake in one part now shows the error, not results that skip that part.",
+		"Hold Ctrl (Cmd on a Mac) as you open a result to open it in a new tab."
+	],
+	"tip": "Type linksto:[[Projects/*]] to find notes that link to any note in a folder.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Search Operators is one of over 100 small plugins that I make. Thank you for using it to find things in your vault.",
+	"related": [
+		{
+			"id": "context-trees",
+			"name": "Context Trees",
+			"blurb": "Show parent headings and lists in search results."
+		},
+		{
+			"id": "embedded-text-finder",
+			"name": "Embedded Text Finder",
+			"blurb": "Find notes through text in their Markdown embeds."
+		},
+		{
+			"id": "tag-properties",
+			"name": "Tag Properties",
+			"blurb": "Browse the values of a list property as tags with note counts."
+		}
+	]
+}

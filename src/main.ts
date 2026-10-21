@@ -5,6 +5,8 @@ import { OperatorSearchModal } from './modal';
 import { SPONSORS, bindPro, isPro, resetPro } from './pro';
 import { needsContent, parseQuery, search, toMarkdownList, type NoteData, type Query, type SearchResult } from './query';
 import { DEFAULT_SETTINGS, SearchOperatorsSettingTab, normalizeSettings, savedList, type SearchOperatorsSettings } from './settings';
+import { setupHello } from './hello/index';
+import WHATS_NEW from './whats-new.json';
 
 /** A notice for a Pro feature that is off. */
 export function needsPro(what: string): void {
@@ -31,6 +33,8 @@ export default class SearchOperatorsPlugin extends Plugin {
 	private texts = new Map<string, TextEntry>();
 
 	async onload(): Promise<void> {
+		// First: "What's new" reads its state before the settings load (packages/hello). It does not wait.
+		setupHello(this, WHATS_NEW);
 		await this.loadSettings();
 		// No request here: a request needs a GitHub sign in first (Settings, Pro, Sign in with GitHub).
 		const pro = createGitHubSponsors(this.app, this.manifest.id, SPONSORS, this);

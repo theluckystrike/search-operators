@@ -74,7 +74,7 @@ Press Ctrl or Cmd + S in the modal to save the query. The command "Run a saved s
 
 ## Install
 
-When Search Operators is listed in the community directory, open Settings, then Community plugins, then Browse, and search for "Search Operators". Select Install, then Enable.
+Open Settings, then Community plugins, then Browse, and search for "Search Operators". Select Install, then Enable.
 
 To install by hand, download `main.js`, `manifest.json` and `styles.css` from the latest release. Put the three files in `<vault>/.obsidian/plugins/search-operators/`. Restart Obsidian or reload the list of community plugins, then turn on Search Operators.
 
@@ -96,6 +96,8 @@ Some queries to start with:
 When you open the modal, the plugin reads the notes that changed since the last search and keeps their text in memory. It does not read an unchanged note again. Links come from the link index of Obsidian. It writes nothing to your notes, except when you use the Pro list command.
 
 ## Settings
+
+After a minor or major update, this plugin opens one What's new tab in the background. The tab and settings card suggest other NoteMods plugins and Zovo Chat and link to notemods.com for feedback ([privacy](https://notemods.com/privacy/)). The tab sends no data. Turn the tab off in Settings.
 
 | Setting | What it does |
 | --- | --- |
