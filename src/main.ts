@@ -2,7 +2,7 @@ import { FuzzySuggestModal, MarkdownView, Notice, Plugin, TFile, getAllTags, typ
 import type { SponsorsManager } from './license/index';
 import { createGitHubSponsors } from './license/github-obsidian';
 import { OperatorSearchModal } from './modal';
-import { SPONSORS, bindPro, isPro, resetPro } from './pro';
+import { SPONSORS, bindPro, isPro, resetPro, proNotice } from './pro';
 import { needsContent, parseQuery, search, toMarkdownList, type NoteData, type Query, type SearchResult } from './query';
 import { DEFAULT_SETTINGS, SearchOperatorsSettingTab, normalizeSettings, savedList, type SearchOperatorsSettings } from './settings';
 import { setupHello } from './hello/index';
@@ -10,7 +10,7 @@ import WHATS_NEW from './whats-new.json';
 
 /** A notice for a Pro feature that is off. */
 export function needsPro(what: string): void {
-	new Notice(`${what} a pro feature. Sponsor on GitHub, then sign in from the plugin settings.`);
+	proNotice(`${what} a pro feature.`);
 }
 
 /** How often to ask the license state whether a check is due. It sends a request only when signed in and due (7 days). */

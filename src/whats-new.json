@@ -1,16 +1,9 @@
 {
 	"id": "search-operators",
 	"name": "Search Operators",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"changes": [
-		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
-		"Handles escaped quotes and stops queries with invalid clauses.",
-		"Opens modified result clicks in a new tab."
-	],
-	"changes_user": [
-		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
-		"A query with a mistake in one part now shows the error, not results that skip that part.",
-		"Hold Ctrl (Cmd on a Mac) as you open a result to open it in a new tab."
+		"The Pro notice for saved searches and Markdown list results now has a Sponsor on GitHub button."
 	],
 	"tip": "Type linksto:[[Projects/*]] to find notes that link to any note in a folder.",
 	"thanks": "Hi, I am Michael, a solo developer in Poland. Search Operators is one of over 100 small plugins that I make. Thank you for using it to find things in your vault.",

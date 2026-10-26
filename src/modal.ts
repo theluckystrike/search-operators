@@ -1,5 +1,5 @@
 import { Keymap, SuggestModal, type App } from 'obsidian';
-import { isPro } from './pro';
+import { isPro, proText } from './pro';
 import { parseQuery, textTerms, type Hit } from './query';
 import { needsPro } from './main';
 import type SearchOperatorsPlugin from './main';
@@ -93,7 +93,7 @@ export class OperatorSearchModal extends SuggestModal<Hit> {
 		this.lastHits = shown;
 		const notes = r.errors.length ? r.errors.join(' ') : '';
 		if (r.blocked.length) {
-			this.statusEl.setText(`${r.blocked.join(', ')}: this is a Pro feature. Pro adds OR, NOT and property operators. Sponsor on GitHub, then sign in from the plugin settings.`);
+			this.statusEl.setText(proText(`${r.blocked.join(', ')}: this is a Pro feature. Pro adds OR, NOT and property operators.`));
 			this.statusEl.toggleClass('is-warning', true);
 		} else if (r.empty) {
 			this.statusEl.setText(notes || HELP);
