@@ -49,6 +49,31 @@ describe('parseQuery', () => {
 	});
 });
 
+describe('property date comparisons', () => {
+	const notes: NoteData[] = [
+		{ path: 'a.md', ctime: 0, mtime: 1, tags: [], links: [], frontmatter: { due: '2026-10-01T08:00' } },
+		{ path: 'b.md', ctime: 0, mtime: 2, tags: [], links: [], frontmatter: { due: '2026-10-01' } },
+		{ path: 'c.md', ctime: 0, mtime: 3, tags: [], links: [], frontmatter: { due: '2026-10-02' } },
+		{ path: 'd.md', ctime: 0, mtime: 4, tags: [], links: [], frontmatter: { priority: 6 } },
+		{ path: 'e.md', ctime: 0, mtime: 5, tags: [], links: [], frontmatter: { priority: 4 } },
+	];
+	const paths = (q: string): string[] =>
+		search(parseQuery(q, now), notes, { allowPro: true }).hits.map((h) => h.path).sort();
+
+	it('compares a date-time value by time, not text', () => {
+		expect(paths('[due:<=2026-10-01]')).toEqual(['a.md', 'b.md']);
+		expect(paths('[due:>2026-10-01]')).toEqual(['c.md']);
+	});
+	it('keeps the day rules of created: and modified:', () => {
+		expect(paths('[due:2026-10-01]')).toEqual(['a.md', 'b.md']);
+		expect(paths('[due:<2026-10-01]')).toEqual([]);
+		expect(paths('[due:>=2026-10-01]')).toEqual(['a.md', 'b.md', 'c.md']);
+	});
+	it('still compares numbers as numbers', () => {
+		expect(paths('[priority:>5]')).toEqual(['d.md']);
+	});
+});
+
 describe('wildcard link targets', () => {
 	it('parses * and ? in link targets as a wildcard', () => {
 		expect(parseQuery('linksto:[[Project*]]', now).groups[0]).toEqual([
