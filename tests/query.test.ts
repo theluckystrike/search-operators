@@ -42,6 +42,12 @@ describe('parseQuery', () => {
 		expect(parseQuery('[x]', now).pro).toEqual(['property operators']);
 		expect(parseQuery('created:today linksto:x tag:y path:z file:w sort:name', now).pro).toEqual([]);
 	});
+	it('rejects negated sort operators', () => {
+		const query = parseQuery('-sort:name', now);
+		expect(query.errors).toHaveLength(1);
+		expect(query.errors[0]).toMatch(/sort: can't be negated/);
+		expect(parseQuery('sort:name', now).sort).toBe('name');
+	});
 	it('reads property operators', () => {
 		expect(parseQuery('[due:<=2026-10-01]', now).groups[0]).toEqual([{ kind: 'prop', key: 'due', op: 'le', value: '2026-10-01', negate: false }]);
 		expect(parseQuery('[due:]', now).groups[0]).toEqual([{ kind: 'prop', key: 'due', op: 'exists', value: '', negate: false }]);
