@@ -223,6 +223,7 @@ function parseToken(token: string, now: number): Clause | { sort: SortKey } | { 
 	const value = m[2] ?? '';
 	if (!value) return { error: `${op}: needs a value.` };
 	if (op === 'sort') {
+		if (negate) return { error: `sort: can't be negated. Use sort:modified, sort:created, sort:name or sort:relevance.` };
 		const k = value.toLowerCase() as SortKey;
 		return SORTS.has(k) ? { sort: k } : { error: `sort:${value} is unknown. Use sort:modified, sort:created, sort:name or sort:relevance.` };
 	}
