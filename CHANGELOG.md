@@ -1,5 +1,11 @@
 # search-operators
 
+## 1.2.2
+
+### Patch Changes
+
+- The Sponsor on GitHub button of Search Operators now opens the one-time payment tab of GitHub Sponsors.
+
 ## 1.2.1
 
 ### Patch Changes

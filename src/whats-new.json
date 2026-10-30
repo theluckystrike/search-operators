@@ -1,9 +1,9 @@
 {
 	"id": "search-operators",
 	"name": "Search Operators",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"changes": [
-		"The Pro notice for saved searches and Markdown list results now has a Sponsor on GitHub button."
+		"The Sponsor on GitHub button now opens the one-time payment tab of GitHub Sponsors."
 	],
 	"tip": "Type linksto:[[Projects/*]] to find notes that link to any note in a folder.",
 	"thanks": "Hi, I am Michael, a solo developer in Poland. Search Operators is one of over 100 small plugins that I make. Thank you for using it to find things in your vault.",

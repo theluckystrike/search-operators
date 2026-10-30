@@ -25,8 +25,6 @@ export interface Query {
 	errors: string[];
 	/** Pro features the query uses: OR, NOT, property operators. */
 	pro: string[];
-	/** The time the query was parsed; relative date tokens count from it. */
-	now: number;
 }
 
 export interface NoteData {
@@ -223,7 +221,6 @@ function parseToken(token: string, now: number): Clause | { sort: SortKey } | { 
 	const value = m[2] ?? '';
 	if (!value) return { error: `${op}: needs a value.` };
 	if (op === 'sort') {
-		if (negate) return { error: `sort: can't be negated. Use sort:modified, sort:created, sort:name or sort:relevance.` };
 		const k = value.toLowerCase() as SortKey;
 		return SORTS.has(k) ? { sort: k } : { error: `sort:${value} is unknown. Use sort:modified, sort:created, sort:name or sort:relevance.` };
 	}
@@ -242,7 +239,7 @@ function parseToken(token: string, now: number): Clause | { sort: SortKey } | { 
 
 /** Parses a query. now = the time "today" and "last-7d" count from. */
 export function parseQuery(text: string, now: number): Query {
-	const q: Query = { groups: [[]], sort: null, errors: [], pro: [], now };
+	const q: Query = { groups: [[]], sort: null, errors: [], pro: [] };
 	for (const token of tokenize(text)) {
 		if (token === 'OR') {
 			if ((q.groups[q.groups.length - 1] ?? []).length) q.groups.push([]);
@@ -343,25 +340,11 @@ function compare(a: string, b: string): number {
 	return a.localeCompare(b);
 }
 
-const PROP_DATE_OPS: Record<Exclude<PropOp, 'exists' | 'eq'>, string> = { gt: '>', ge: '>=', lt: '<', le: '<=' };
-
-function propMatch(fm: Record<string, unknown> | null, c: Extract<Clause, { kind: 'prop' }>, now: number): boolean {
+function propMatch(fm: Record<string, unknown> | null, c: Extract<Clause, { kind: 'prop' }>): boolean {
 	const values = asTexts(propValue(fm, c.key)).filter((x) => x !== '');
 	if (c.op === 'exists') return values.length > 0;
 	const want = c.value.toLowerCase();
-	let range: DateRange | null = null;
-	if (c.op !== 'eq') {
-		// Dated values keep the day rules of created: and modified: (>2026-10-01 starts after that
-		// whole day), so a date-time such as 2026-10-01T08:00 is not later than its own day.
-		// Values that parseDateSpec does not read as a date keep the old number/text compare.
-		const parsed = parseDateSpec(PROP_DATE_OPS[c.op] + c.value, now);
-		if (typeof parsed !== 'string') range = parsed;
-	}
 	return values.some((raw) => {
-		if (range) {
-			const t = parseLocalTime(raw);
-			if (t !== null) return inRange(t, range);
-		}
 		const v = raw.toLowerCase();
 		if (c.op === 'eq') return v === want || v.includes(want);
 		const d = compare(v, want);
@@ -373,7 +356,6 @@ const inRange = (t: number, r: DateRange): boolean => (r.from === null || t >= r
 
 interface Ctx {
 	opts: SearchOptions;
-	now: number;
 	resolve: (linktext: string) => string | null;
 	byPath: Map<string, NoteData>;
 	errors: Set<string>;
@@ -441,7 +423,7 @@ function clauseScore(c: Clause, note: NoteData, times: { created: number; modifi
 		case 'file':
 			return (note.path.split('/').pop() ?? '').toLowerCase().includes(c.value) ? 1 : 0;
 		case 'prop':
-			return propMatch(note.frontmatter, c, ctx.now) ? 1 : 0;
+			return propMatch(note.frontmatter, c) ? 1 : 0;
 	}
 }
 
@@ -495,7 +477,7 @@ function sortHits(hits: Hit[], key: SortKey): Hit[] {
 
 /** Runs a query over notes. Sort: sort: operator, else relevance with text terms, else newest modified first. */
 export function search(query: Query, notes: NoteData[], opts: SearchOptions): SearchResult {
-	const ctx: Ctx = { opts, now: query.now, resolve: opts.resolve ?? makeResolver(notes.map((n) => n.path)), byPath: new Map(notes.map((n) => [n.path, n])), errors: new Set(query.errors), patterns: new Map(), linkedFrom: new Map() };
+	const ctx: Ctx = { opts, resolve: opts.resolve ?? makeResolver(notes.map((n) => n.path)), byPath: new Map(notes.map((n) => [n.path, n])), errors: new Set(query.errors), patterns: new Map(), linkedFrom: new Map() };
 	if (query.errors.length) return { hits: [], errors: [...ctx.errors], blocked: [], empty: !query.groups.length };
 	if (!query.groups.length) return { hits: [], errors: [...ctx.errors], blocked: [], empty: true };
 	if (query.pro.length && !opts.allowPro) return { hits: [], errors: [...ctx.errors], blocked: [...query.pro], empty: false };
