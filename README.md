@@ -6,7 +6,19 @@ The core search of Obsidian 1.14 has `file:`, `path:`, `content:`, `tag:`, `line
 
 <img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/search-operators.gif" alt="Type a query and each operator narrows the list" width="720">
 
-Free searches by dates, links, tags, and paths, with result previews. Pro adds OR, NOT and property operators, Markdown result lists, and saved searches. Pro costs $15 one time or $5 a month. Choose [GitHub Sponsors](https://github.com/sponsors/theluckystrike?metadata_source=search-operators) or the [$15 one-time offer](https://github.com/sponsors/theluckystrike/sponsorships?tier_id=666162&metadata_source=search-operators).
+Free searches by dates, links, tags, and paths, with result previews. Pro adds OR, NOT and property operators, Markdown result lists, and saved searches. Pro costs $15 one time or $5 a month. Choose [GitHub Sponsors](https://github.com/sponsors/theluckystrike?frequency=one-time&metadata_source=search-operators) or the [$15 one-time offer](https://github.com/sponsors/theluckystrike/sponsorships?tier_id=666162&metadata_source=search-operators).
+
+## Quick start
+
+1. Open the command palette and run "Search notes with operators". You can also select the search icon in the ribbon.
+2. Type this query:
+
+```text
+modified:last-7d
+```
+
+3. Read the list. It shows the notes that you changed in the last 7 days, newest first. Use the arrow keys to pick a note, then press Enter to open it.
+4. Add an operator to make the list shorter, for example `modified:last-7d linksto:[[Project]]`. Use the name of a note in your vault.
 
 ## Features
 
@@ -148,7 +160,7 @@ A day starts at midnight in the time zone of your device. A range such as `creat
 
 The core features are free. Pro features need a GitHub Sponsors sponsorship of theluckystrike: $5 a month or more, or $15 once. A total payment of $15 meets the payment requirement for Pro without further payment. Sign-in and the checks below still apply. Your notes stay readable and editable with or without Pro.
 
-GitHub handles the payment. Sponsor at https://github.com/sponsors/theluckystrike. You need no account for the free features. Pro needs the GitHub account that sponsors.
+GitHub handles the payment. Sponsor at https://github.com/sponsors/theluckystrike?frequency=one-time&metadata_source=search-operators. You need no account for the free features. Pro needs the GitHub account that sponsors.
 
 Until you select "Sign in with GitHub" in the settings, Search Operators makes no network requests. Sign in uses the GitHub device flow. Search Operators sends its public client ID and the scope `read:user` to `https://github.com/login/device/code` and shows you a code. While you enter the code at https://github.com/login/device, it asks `https://github.com/login/oauth/access_token` every few seconds to check the sign-in status. The scope permits profile reads only. GitHub needs this access to show the sponsorship tier. It grants no repository scope and no write access.
 
