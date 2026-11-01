@@ -6,7 +6,7 @@ The core search of Obsidian 1.14 has `file:`, `path:`, `content:`, `tag:`, `line
 
 <img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/search-operators.gif" alt="Type a query and each operator narrows the list" width="720">
 
-Free searches by dates, links, tags, and paths, with result previews. Pro adds OR, NOT and property operators, Markdown result lists, and saved searches. Pro costs $15 one time or $5 a month. Choose [GitHub Sponsors](https://github.com/sponsors/theluckystrike?frequency=one-time&metadata_source=search-operators) or the [$15 one-time offer](https://github.com/sponsors/theluckystrike/sponsorships?tier_id=666162&metadata_source=search-operators).
+Free searches by dates, links, tags, and paths, with result previews. Pro costs $15 one time or $5 a month. Choose [GitHub Sponsors](https://github.com/sponsors/theluckystrike?frequency=one-time&metadata_source=search-operators) or the [$15 one-time offer](https://github.com/sponsors/theluckystrike/sponsorships?tier_id=666162&metadata_source=search-operators).
 
 ## Quick start
 
@@ -155,6 +155,20 @@ The plugin is not marked desktop only, and the modal uses the same suggestion li
 ### How are the date ranges counted?
 
 A day starts at midnight in the time zone of your device. A range such as `created:2026-09-01..2026-09-30` starts at the first midnight and ends at the midnight after the last day. A relative range such as `modified:last-7d` starts exactly seven days before the moment you type, and has no end, so a note you change while the modal is open still counts.
+
+## Pro
+
+The command "What Pro adds" shows each with a demo.
+
+<img src="https://raw.githubusercontent.com/theluckystrike/search-operators/HEAD/docs/what-pro.png" alt="The What Pro adds window with a Try it demo" width="720">
+
+- Put OR between two groups of terms to find the notes that match either group.
+- Put a minus sign before a word or an operator to leave out the notes that match it.
+- Property operators find notes by a property value, for example [status:done] or [priority:>5].
+- Ctrl or Cmd + Shift + Enter writes the results into the open note as a Markdown list of links.
+- Ctrl or Cmd + S saves the search, and the command "Run a saved search" runs it again.
+
+Sponsor $5 a month, or $15 once. When you have paid $15 in total, Pro stays on.
 
 ## Payment, account and network
 

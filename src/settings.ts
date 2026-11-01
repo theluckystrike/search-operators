@@ -1,5 +1,5 @@
 import { PluginSettingTab, type SettingDefinitionItem } from 'obsidian';
-import { sponsorsSettingItems } from './license/github-obsidian';
+import { sponsorsSettingItemsWithWhatPro } from './license/github-obsidian';
 import { PRO_UI, isPro } from './pro';
 import type SearchOperatorsPlugin from './main';
 import { helloSettingItems } from './hello/settings';
@@ -59,7 +59,7 @@ export class SearchOperatorsSettingTab extends PluginSettingTab {
 
 	productSettingDefinitions(): SettingDefinitionItem[] {
 		return [
-			...(this.plugin.pro ? sponsorsSettingItems(this.plugin.pro, PRO_UI) : []),
+			...(this.plugin.pro ? sponsorsSettingItemsWithWhatPro(this.plugin.pro, PRO_UI, () => this.plugin.openWhatPro()) : []),
 			{
 				name: 'Created date property',
 				desc: 'Frontmatter property that holds the date a note was made, for example created. Leave empty to use the file creation time. A note without the property uses the file time.',

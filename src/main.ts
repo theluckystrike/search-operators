@@ -1,12 +1,13 @@
 import { FuzzySuggestModal, MarkdownView, Notice, Plugin, TFile, getAllTags, type App } from 'obsidian';
 import type { SponsorsManager } from './license/index';
-import { createGitHubSponsors } from './license/github-obsidian';
+import { WHAT_PRO_TITLE, createGitHubSponsors } from './license/github-obsidian';
 import { OperatorSearchModal } from './modal';
-import { SPONSORS, bindPro, isPro, resetPro, proNotice } from './pro';
+import { SPONSORS, bindPro, bindWhatPro, isPro, resetPro, proNotice } from './pro';
 import { needsContent, parseQuery, search, toMarkdownList, type NoteData, type Query, type SearchResult } from './query';
 import { DEFAULT_SETTINGS, SearchOperatorsSettingTab, normalizeSettings, savedList, type SearchOperatorsSettings } from './settings';
 import { setupHello } from './hello/index';
 import WHATS_NEW from './whats-new.json';
+import { openWhatPro } from './what-pro';
 
 /** A notice for a Pro feature that is off. */
 export function needsPro(what: string): void {
@@ -41,6 +42,7 @@ export default class SearchOperatorsPlugin extends Plugin {
 		pro.init();
 		this.pro = pro;
 		bindPro(pro);
+		bindWhatPro(() => this.openWhatPro());
 		this.register(pro.onChange(() => this.settingTab?.update()));
 		this.settingTab = new SearchOperatorsSettingTab(this.app, this);
 		this.addSettingTab(this.settingTab);
@@ -57,6 +59,8 @@ export default class SearchOperatorsPlugin extends Plugin {
 			checkCallback: (checking) => this.withActive(checking, (f) => `linkedfrom:[[${f.path.replace(/\.md$/i, '')}]] `),
 		});
 		this.addCommand({ id: 'run-saved', name: 'Run a saved search', callback: () => this.openSaved() });
+		// Opens only on this command, the settings button or the link in the Pro notice. Never at startup.
+		this.addCommand({ id: 'what-pro-adds', name: WHAT_PRO_TITLE, callback: () => this.openWhatPro() });
 		this.registerEvent(this.app.vault.on('delete', (f) => this.texts.delete(f.path)));
 		this.registerEvent(this.app.vault.on('rename', (_f, old) => this.texts.delete(old)));
 		this.app.workspace.onLayoutReady(() => {
@@ -68,6 +72,11 @@ export default class SearchOperatorsPlugin extends Plugin {
 	onunload(): void {
 		resetPro();
 		this.texts.clear();
+	}
+
+	/** The "What Pro adds" window: each Pro feature with a demo on sample notes, the price and the sign in. */
+	openWhatPro(): void {
+		openWhatPro(this.app, this.pro, this.manifest.id, this.manifest.name);
 	}
 
 	async loadSettings(): Promise<void> {

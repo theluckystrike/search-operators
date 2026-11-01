@@ -99,5 +99,13 @@
 		"eval": "(async () => { const p=app.plugins.plugins['search-operators']; p.pro.signOut(); const m=p.openSearch(); await new Promise(r=>setTimeout(r,700)); const q='\"He said \\\\\"hello world\\\\\"\"'; const hits=m.getSuggestions(q); if(!hits.some(x=>x.path.endsWith('/Hard inputs.md'))) throw new Error('Escaped quote did not match'); if(m.getSuggestions('padding created:invalid').length) throw new Error('Invalid date returned results'); if(!m.getSuggestions('/a+b/').some(x=>x.path.endsWith('/Hard inputs.md'))) throw new Error('Literal regex text did not match'); m.inputEl.value=q; m.inputEl.dispatchEvent(new Event('input')); return 'hard inputs passed'; })()",
 		"wait": 700,
 		"after": "document.querySelectorAll('.modal-container').forEach(el => el.remove()); 'ok'"
+	},
+	{
+		"feature": "what-pro",
+		"caption": "The command \"What Pro adds\" lists each Pro feature with a Try it demo, the price, Sponsor $15 once and Sign in with GitHub.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); app.commands.executeCommandById('search-operators:what-pro-adds'); await new Promise(r=>setTimeout(r,600)); const m=document.querySelector('.modal.pf-whatpro'); if(!m) throw new Error('What Pro adds did not open'); const b=Array.from(m.querySelectorAll('button')).map(x=>x.textContent); if(!b.includes('Sponsor $15 once')||!b.includes('Sign in with GitHub')) throw new Error('Missing buttons: '+b.join(',')); m.querySelector('.pf-whatpro-feature button').click(); await new Promise(r=>setTimeout(r,500)); const d=m.querySelector('.pf-whatpro-demo'); if(!d || d.textContent.includes('could not run') || (d.textContent.trim()==='' && !d.querySelector('svg, table'))) throw new Error('No demo'); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); return 'ok'; })()",
+		"wait": 700
 	}
 ]
