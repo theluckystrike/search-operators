@@ -1,10 +1,9 @@
 {
 	"id": "search-operators",
 	"name": "Search Operators",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"changes": [
-		"New command \"What Pro adds\": read each Pro feature and try it on sample notes.",
-		"The Pro section of the settings and the Pro notice also open \"What Pro adds\"."
+		"The Pro notice of Search Operators now says that one payment turns on Pro in every NoteMods plugin."
 	],
 	"tip": "Type linksto:[[Projects/*]] to find notes that link to any note in a folder.",
 	"thanks": "Hi, I am Michael, a solo developer in Poland. Search Operators is one of over 100 small plugins that I make. Thank you for using it to find things in your vault.",

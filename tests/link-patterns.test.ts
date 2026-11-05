@@ -3,6 +3,7 @@ import { App } from 'obsidian-test-mocks/obsidian';
 import SearchOperatorsPlugin from '../src/main';
 import { parseQuery, search, type NoteData } from '../src/query';
 import manifest from '../manifest.json';
+import { GROWTH_LIMIT, growth } from './growth';
 
 const now = new Date(2026, 9, 12, 12).getTime();
 const note = (path: string, links: string[] = [], rawLinks: string[] = []): NoteData => ({ path, ctime: 0, mtime: 0, tags: [], links, rawLinks, frontmatter: null });
@@ -34,14 +35,16 @@ describe('link patterns', () => {
 		expect(paths('linkedfrom:[[Projects/*]]', notes)).toEqual(['Work/People/Ana.md']);
 		expect(paths('linkedfrom:[[Work/Projects/*]]', notes)).toEqual(['Work/People/Ana.md']);
 	});
-	it('linkedfrom with a pattern over 5,000 notes is fast', () => {
-		const n = 5000;
-		const notes = Array.from({ length: n }, (_, i) => note(`Notes/${i}.md`, [`Notes/${(i * 7) % n}.md`, `Notes/${(i * 3) % n}.md`]));
-		const t0 = performance.now();
-		const r = search(parseQuery('linkedfrom:[[Notes/1*]]', now), notes, { allowPro: false });
-		const ms = performance.now() - t0;
+	it('linkedfrom with a pattern over 5,000 notes runs in linear time', () => {
+		const vaultOf = (n: number) => Array.from({ length: n }, (_, i) => note(`Notes/${i}.md`, [`Notes/${(i * 7) % n}.md`, `Notes/${(i * 3) % n}.md`]));
+		const r = search(parseQuery('linkedfrom:[[Notes/1*]]', now), vaultOf(5000), { allowPro: false });
 		expect(r.hits.length).toBeGreaterThan(0);
-		expect(ms).toBeLessThan(process.env.FX_PERF_STRICT === '1' ? 150 : 1500);
+		// Timing guard that holds on a slow shared CI runner (s1103 CIFIX): 10 times the notes, about 10 times the time.
+		const g = growth((n) => {
+			const notes = vaultOf(n);
+			return () => search(parseQuery('linkedfrom:[[Notes/1*]]', now), notes, { allowPro: false });
+		}, 5000);
+		expect(g.ratio, g.text).toBeLessThan(GROWTH_LIMIT);
 	});
 });
 

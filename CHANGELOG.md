@@ -1,5 +1,11 @@
 # search-operators
 
+## 1.2.4
+
+### Patch Changes
+
+- The Pro notice of Search Operators now says that one payment turns on Pro in every NoteMods plugin.
+
 ## 1.2.3
 
 ### Patch Changes
