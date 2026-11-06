@@ -1,9 +1,11 @@
 {
 	"id": "search-operators",
 	"name": "Search Operators",
-	"version": "1.2.4",
+	"version": "1.2.5",
 	"changes": [
-		"The Pro notice of Search Operators now says that one payment turns on Pro in every NoteMods plugin."
+		"A property date that has a time of day now counts as part of its own day in date compares.",
+		"Thanks to bfs2021.",
+		"A minus sign before a sort operator now shows an error instead of being dropped."
 	],
 	"tip": "Type linksto:[[Projects/*]] to find notes that link to any note in a folder.",
 	"thanks": "Hi, I am Michael, a solo developer in Poland. Search Operators is one of over 100 small plugins that I make. Thank you for using it to find things in your vault.",

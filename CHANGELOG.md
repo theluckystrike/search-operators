@@ -1,5 +1,13 @@
 # search-operators
 
+## 1.2.5
+
+### Patch Changes
+
+- c0897ec: A property date that has a time of day now counts as part of its own day in date compares. Thanks to bfs2021.
+  A minus sign before a sort operator now shows an error instead of being dropped. Thanks to jay23606.
+  A date range that ends before it starts now shows an error instead of an empty list.
+
 ## 1.2.4
 
 ### Patch Changes

@@ -66,7 +66,7 @@ Each plain word must appear in the title, the path or the text of the note. Put 
 
 ### OR, NOT and property operators (Pro)
 
-Put `OR` between two groups to get notes that match either group. Put `-` in front of any operator or word to exclude it: `path:meetings -tag:finance`. Property operators test frontmatter: `[status]` means the property has a value, `[status:done]` means it holds done, and `[priority:>5]` or `[due:<2026-11-01]` compare numbers or dates. Lists work: `[attendees:Ben]` finds a link to Ben in the attendees list.
+Put `OR` between two groups to get notes that match either group. Put `-` in front of a word or a filter operator to exclude it (not `sort:`): `path:meetings -tag:finance`. Property operators test frontmatter: `[status]` means the property has a value, `[status:done]` means it holds done, and `[priority:>5]` or `[due:<2026-11-01]` compare numbers or dates. Lists work: `[attendees:Ben]` finds a link to Ben in the attendees list.
 
 Without Pro, a query with these parts lists nothing and the status line names the Pro part. So the list does not ignore the Pro part of your query.
 

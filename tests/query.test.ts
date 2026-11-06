@@ -30,8 +30,14 @@ describe('parseDateSpec', () => {
 		expect(parseDateSpec('last3m', now)).toEqual({ from: new Date(2026, 6, 10, 12, 0).getTime(), to: null });
 		expect(parseDateSpec('last-1y', now)).toEqual({ from: new Date(2025, 9, 10, 12, 0).getTime(), to: null });
 	});
+	it('rejects a range that ends before it starts', () => {
+		expect(parseDateSpec('2026-09-30..2026-09-01', now)).toBe('"2026-09-30..2026-09-01" ends before it starts.');
+		expect(typeof parseDateSpec('2026..2025', now)).toBe('string');
+		expect(parseQuery('created:2026-09-30..2026-09-01', now).errors).toEqual(['created: "2026-09-30..2026-09-01" ends before it starts.']);
+		expect(parseDateSpec('2026-09-01..2026-09-01', now)).toEqual({ from: day(2026, 9, 1), to: day(2026, 9, 2) });
+	});
 	it('rejects bad dates', () => {
-		for (const bad of ['', 'soon', '2026-00-01', '2026-01-32', '>last-7d', '2026-01-01..x']) expect(typeof parseDateSpec(bad, now)).toBe('string');
+		for (const bad of ['', 'soon', '2026-00-01', '2026-01-32', '>last-7d', '2026-01-01..x', '2026-09-30..2026-09-01']) expect(typeof parseDateSpec(bad, now)).toBe('string');
 	});
 });
 
@@ -42,10 +48,41 @@ describe('parseQuery', () => {
 		expect(parseQuery('[x]', now).pro).toEqual(['property operators']);
 		expect(parseQuery('created:today linksto:x tag:y path:z file:w sort:name', now).pro).toEqual([]);
 	});
+	it('rejects negated sort operators', () => {
+		const query = parseQuery('-sort:name', now);
+		expect(query.errors).toHaveLength(1);
+		expect(query.errors[0]).toMatch(/sort: can't be negated/);
+		expect(parseQuery('sort:name', now).sort).toBe('name');
+	});
 	it('reads property operators', () => {
 		expect(parseQuery('[due:<=2026-10-01]', now).groups[0]).toEqual([{ kind: 'prop', key: 'due', op: 'le', value: '2026-10-01', negate: false }]);
 		expect(parseQuery('[due:]', now).groups[0]).toEqual([{ kind: 'prop', key: 'due', op: 'exists', value: '', negate: false }]);
 		expect(parseQuery('[:x]', now).errors.length).toBe(1);
+	});
+});
+
+describe('property date comparisons', () => {
+	const notes: NoteData[] = [
+		{ path: 'a.md', ctime: 0, mtime: 1, tags: [], links: [], frontmatter: { due: '2026-10-01T08:00' } },
+		{ path: 'b.md', ctime: 0, mtime: 2, tags: [], links: [], frontmatter: { due: '2026-10-01' } },
+		{ path: 'c.md', ctime: 0, mtime: 3, tags: [], links: [], frontmatter: { due: '2026-10-02' } },
+		{ path: 'd.md', ctime: 0, mtime: 4, tags: [], links: [], frontmatter: { priority: 6 } },
+		{ path: 'e.md', ctime: 0, mtime: 5, tags: [], links: [], frontmatter: { priority: 4 } },
+	];
+	const paths = (q: string): string[] =>
+		search(parseQuery(q, now), notes, { allowPro: true }).hits.map((h) => h.path).sort();
+
+	it('compares a date-time value by time, not text', () => {
+		expect(paths('[due:<=2026-10-01]')).toEqual(['a.md', 'b.md']);
+		expect(paths('[due:>2026-10-01]')).toEqual(['c.md']);
+	});
+	it('keeps the day rules of created: and modified:', () => {
+		expect(paths('[due:2026-10-01]')).toEqual(['a.md', 'b.md']);
+		expect(paths('[due:<2026-10-01]')).toEqual([]);
+		expect(paths('[due:>=2026-10-01]')).toEqual(['a.md', 'b.md', 'c.md']);
+	});
+	it('still compares numbers as numbers', () => {
+		expect(paths('[priority:>5]')).toEqual(['d.md']);
 	});
 });
 
