@@ -1,7 +1,7 @@
 {
 	"id": "search-operators",
 	"name": "Search Operators",
-	"version": "1.2.5",
+	"version": "1.2.6",
 	"changes": [
 		"A property date that has a time of day now counts as part of its own day in date compares.",
 		"Thanks to bfs2021.",

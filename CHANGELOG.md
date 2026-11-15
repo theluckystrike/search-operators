@@ -1,5 +1,11 @@
 # search-operators
 
+## 1.2.6
+
+### Patch Changes
+
+- The Sponsor button now opens the NoteMods one-time tier.
+
 ## 1.2.5
 
 ### Patch Changes
